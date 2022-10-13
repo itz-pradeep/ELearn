@@ -1,4 +1,5 @@
 using Catalog.API.Data;
+using Catalog.API.Helpers;
 using Catalog.API.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -36,6 +37,7 @@ namespace Catalog.API
 
             services.AddScoped<ICatalogContext,CatalogContext>();
             services.AddScoped<ICourseRepository,CourseRepository>();
+            services.AddAutoMapper(typeof(MappingProfile));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

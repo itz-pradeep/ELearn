@@ -1,4 +1,6 @@
-﻿using Catalog.API.Entities;
+﻿using AutoMapper;
+using Catalog.API.Dtos;
+using Catalog.API.Entities;
 using Catalog.API.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -12,33 +14,39 @@ using System.Threading.Tasks;
 
 namespace Catalog.API.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/v1.0/lms/courses")]
     [ApiController]
-    public class CatalogController : ControllerBase
+    public class CoursesController : ControllerBase
     {
         private readonly ICourseRepository _courseRepository;
-        private readonly ILogger<CatalogController> _logger;
+        private readonly ILogger<CoursesController> _logger;
+        private readonly IMapper _mapper;
 
-        public CatalogController(ICourseRepository courseRepository,ILogger<CatalogController> logger)
+        public CoursesController(ICourseRepository courseRepository
+            ,ILogger<CoursesController> logger
+            ,IMapper mapper)
         {
             _courseRepository = courseRepository;
             _logger = logger;
+            _mapper = mapper;
         }
         // GET: api/v1/<CatalogController>
-        [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<Course>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<IEnumerable<Course>>> GetCourses()
+        [HttpGet("getall")]
+        [ProducesResponseType(typeof(IEnumerable<CourseDto>), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<IEnumerable<CourseDto>>> GetCourses()
         {
             var courses = await _courseRepository.GetCoursesAsync();
-            return Ok(courses);
+            var coursesToReturn = _mapper.Map<IEnumerable<CourseDto>>(courses);
+                
+            return Ok(coursesToReturn);
 
         }
 
         // GET api/<CatalogController>/shfdjshfidshfkdsh
         [HttpGet("{id}",Name = "GetCourse")]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(Course), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<Course>> GetCourseById(string id)
+        [ProducesResponseType(typeof(CourseDto), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<CourseDto>> GetCourseById(string id)
         {
             var course = await _courseRepository.GetCourseAsync(id);
             if(course == null)
@@ -47,15 +55,33 @@ namespace Catalog.API.Controllers
                 return NotFound();
             }
 
-            return Ok(course);
+            var courseToReturn = _mapper.Map<CourseDto>(course);
+
+            return Ok(courseToReturn);
+
+        }
+
+        [HttpPost("info", Name = "GetByFilter")]
+        [ProducesResponseType(typeof(IEnumerable<CourseDto>), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<IEnumerable<CourseDto>>> GetByFilter(FilterDto filter)
+        {
+            var courses = await _courseRepository.GetCourseByFilterAsync(filter);
+      
+            var coursesToReturn = _mapper.Map<IEnumerable<CourseDto>>(courses);
+
+            return Ok(coursesToReturn);
 
         }
 
         // POST api/<CatalogController>
         [HttpPost]
         [ProducesResponseType(typeof(Course),(int)HttpStatusCode.OK)]
-        public async Task<ActionResult<Course>> CreateCourse([FromBody] Course course)
+        public async Task<ActionResult<Course>> CreateCourse([FromBody] CourseCreateDto request)
         {
+            var course = _mapper.Map<Course>(request);
+            course.CreatedDate = DateTimeOffset.Now;
+            course.IsActive = true;
+
             await _courseRepository.CreateCourseAsync(course);
             return CreatedAtRoute("GetCourse",new { Id  = course.Id}, course);
         }
@@ -63,8 +89,10 @@ namespace Catalog.API.Controllers
         // PUT api/<CatalogController>/5
         [HttpPut()]
         [ProducesResponseType(typeof(Course), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> UpdateCourse([FromBody] Course course)
+        public async Task<IActionResult> UpdateCourse([FromBody] CourseUpdateDto request)
         {
+            var course = _mapper.Map<Course>(request);
+
             return Ok(await _courseRepository.UpdateCourseAsync(course));
         }
 

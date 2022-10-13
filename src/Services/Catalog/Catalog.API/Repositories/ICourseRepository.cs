@@ -1,4 +1,5 @@
-﻿using Catalog.API.Entities;
+﻿using Catalog.API.Dtos;
+using Catalog.API.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Catalog.API.Repositories
     {
         Task<IEnumerable<Course>> GetCoursesAsync();
         Task<Course> GetCourseAsync(string id);
-        Task<IEnumerable<Course>> GetCourseByTechnologyAsync(string Technology);
+        Task<IEnumerable<Course>> GetCourseByFilterAsync(FilterDto filter);
         Task CreateCourseAsync(Course entity);
         Task<bool> UpdateCourseAsync(Course entity);
         Task<bool> DeleteCourseAsync(string id);
