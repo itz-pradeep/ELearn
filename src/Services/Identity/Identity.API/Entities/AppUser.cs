@@ -2,10 +2,10 @@
 using MongoDbGenericRepository.Attributes;
 using System;
 
-namespace Identity.API.Models
+namespace Identity.API.Entities
 {
-    [CollectionName("Roles")]
-    public class AppRole : MongoIdentityRole<Guid>
+    [CollectionName("Users")]
+    public class AppUser : MongoIdentityUser<Guid>
     {
     }
 }

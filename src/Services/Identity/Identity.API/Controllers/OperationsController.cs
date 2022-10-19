@@ -1,5 +1,5 @@
 ﻿using Identity.API.Dtos;
-using Identity.API.Models;
+using Identity.API.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

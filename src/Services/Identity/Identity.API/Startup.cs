@@ -1,5 +1,5 @@
-using Identity.API.Data;
-using Identity.API.Models;
+using Identity.API.Entities;
+using Identity.API.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -35,12 +35,16 @@ namespace Identity.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Identity.API", Version = "v1" });
             });
-            services.AddSingleton<IIdentityContext, IdentityContext>();
-            services.AddIdentity<AppUser,AppRole>()
-                .AddMongoDbStores<AppUser,AppRole,Guid>
+            //services.AddScoped<IIdentityRepository, IdentityRepository>();
+            //services.AddSingleton<IIdentityContext, IdentityContext>();
+            services.AddIdentity<AppUser, AppRole>()
+                .AddMongoDbStores<AppUser, AppRole, Guid>
                 (
-                    mongoConnectionString,mongoDbName
+                    mongoConnectionString, mongoDbName
                 );
+
+            services.SeedUsers(Configuration);
+    
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,5 +1,5 @@
 ﻿using Identity.API.Dtos;
-using Identity.API.Models;
+using Identity.API.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +12,7 @@ namespace Identity.API.Controllers
     [ApiController]
     public class IdentityController : ControllerBase
     {
+
         private readonly UserManager<AppUser> _userManager;
 
         public IdentityController(UserManager<AppUser> userManager)
@@ -30,7 +31,7 @@ namespace Identity.API.Controllers
 
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user,"NORMAL_USER");
+                await _userManager.AddToRoleAsync(user, "NORMAL_USER");
 
                 return Ok();
             }
@@ -43,10 +44,11 @@ namespace Identity.API.Controllers
         [HttpGet]
         public IActionResult GetUsers()
         {
-            var result =  _userManager.Users.ToList();
+            var result = _userManager.Users.ToList();
 
             return Ok(result);
         }
+
 
     }
 }

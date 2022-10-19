@@ -1,4 +1,5 @@
 ﻿using Catalog.API.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using System;
