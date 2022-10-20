@@ -1,16 +1,21 @@
 using Identity.API.Entities;
 using Identity.API.Extensions;
+using Identity.API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Identity.API
@@ -35,16 +40,38 @@ namespace Identity.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Identity.API", Version = "v1" });
             });
-            //services.AddScoped<IIdentityRepository, IdentityRepository>();
-            //services.AddSingleton<IIdentityContext, IdentityContext>();
+
             services.AddIdentity<AppUser, AppRole>()
                 .AddMongoDbStores<AppUser, AppRole, Guid>
                 (
                     mongoConnectionString, mongoDbName
                 );
 
+            //services.AddSignInManager<SignInManager<AppUser>>()
+            services.AddScoped<ITokenService,TokenService>();
             services.SeedUsers(Configuration);
-    
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+              .AddJwtBearer(options =>
+              {
+                  options.TokenValidationParameters = new TokenValidationParameters
+                  {
+                      ValidateIssuerSigningKey = true,
+                      IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Token:Key"])),
+                      ValidIssuer = Configuration["Token:Issuer"],
+                      ValidateIssuer = true,
+                      ValidateAudience = false
+                  };
+              });
+
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200");
+                });
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

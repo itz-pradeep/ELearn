@@ -40,6 +40,7 @@ namespace Identity.API.Helpers
 
         public static void InsertDemoUsers(IMongoCollection<AppUser> appUsers,RoleManager<AppRole> roleManager,UserManager<AppUser> userManager)
         {
+            //appUsers.DeleteMany(x => true);
             bool existsUsers = appUsers.Find(p => true).Any();
 
             if (!existsUsers)
@@ -49,7 +50,7 @@ namespace Identity.API.Helpers
                 var userRole = roleManager.FindByNameAsync("NORMAL_USER").Result;
                 foreach (var usr in adminUsers)
                 {
-                    var result = userManager.CreateAsync(usr).Result;
+                    var result = userManager.CreateAsync(usr,"Password@123").Result;
                     if (result.Succeeded)
                         userManager.AddToRoleAsync(usr, adminRole.Name);
                 }
@@ -58,7 +59,7 @@ namespace Identity.API.Helpers
 
                 foreach (var usr in normalUsers)
                 {
-                    var result = userManager.CreateAsync(usr).Result;
+                    var result = userManager.CreateAsync(usr, "Password@123").Result;
                     if (result.Succeeded)
                         userManager.AddToRoleAsync(usr, userRole.Name).ConfigureAwait(false); ;
                 }
@@ -70,6 +71,8 @@ namespace Identity.API.Helpers
             return new List<AppUser>() { 
                 new AppUser
                 {
+                    FirstName = "Pradeep",
+                    LastName = "Singh",
                     UserName = "its-pradeep-user",
                     Email = "pradeepasuser@gmail.com"
                 }
@@ -81,6 +84,8 @@ namespace Identity.API.Helpers
             return new List<AppUser>() {
                 new AppUser
                 {
+                    FirstName = "Pradeep",
+                    LastName = "Singh",
                     UserName = "its-pradeep-admin",
                     Email = "pradeepasadmin@gmail.com"
                 }
