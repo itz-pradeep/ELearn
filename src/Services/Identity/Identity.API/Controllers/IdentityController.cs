@@ -81,8 +81,7 @@ namespace Identity.API.Controllers
         }
 
 
-        //[Authorize(Roles = "ADMIN")]
-        //Test
+        [Authorize(Roles = "ADMIN")]
         [HttpGet]
         public IActionResult GetUsers()
         {

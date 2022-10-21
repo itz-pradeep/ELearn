@@ -61,7 +61,7 @@ namespace Identity.API.Helpers
                 {
                     var result = userManager.CreateAsync(usr, "Password@123").Result;
                     if (result.Succeeded)
-                        userManager.AddToRoleAsync(usr, userRole.Name).ConfigureAwait(false); ;
+                        userManager.AddToRoleAsync(usr, userRole.Name);
                 }
             }
         }

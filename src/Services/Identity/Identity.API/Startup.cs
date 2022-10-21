@@ -59,8 +59,17 @@ namespace Identity.API
                 c.AddSecurityRequirement(securityRequirement);
             });
 
+            services.AddIdentity<AppUser, AppRole>()
+              .AddMongoDbStores<AppUser, AppRole, Guid>
+              (
+                  mongoConnectionString, mongoDbName
+              );
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            services.AddAuthentication(op => {
+                op.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                op.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                op.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
               .AddJwtBearer(options =>
               {
                   options.TokenValidationParameters = new TokenValidationParameters
@@ -73,14 +82,7 @@ namespace Identity.API
                   };
               });
 
-
-            services.AddIdentity<AppUser, AppRole>()
-                .AddMongoDbStores<AppUser, AppRole, Guid>
-                (
-                    mongoConnectionString, mongoDbName
-                );
-
-            //services.AddSignInManager<SignInManager<AppUser>>()
+ 
             services.AddScoped<ITokenService,TokenService>();
             services.SeedUsers(Configuration);
 
