@@ -1,7 +1,7 @@
 version: '3.4'
 
 services:
-  catalogdb:
+  nosqldata:
     image: mongo
 
   catalog.api:
@@ -10,5 +10,12 @@ services:
       context: .
       dockerfile: services/Catalog/Catalog.API/Dockerfile
 
+  identity.api:
+    image: ${DOCKER_REGISTRY-}identityapi
+    build:
+      context: .
+      dockerfile: Services/Identity/Identity.API/Dockerfile
+
 volumes:
-  mongo_data:
+  elearn-nosqldata:
+
