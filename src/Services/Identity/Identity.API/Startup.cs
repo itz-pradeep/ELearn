@@ -36,20 +36,29 @@ namespace Identity.API
             string mongoDbName = Configuration.GetValue<string>("MongoDbSettings:DatabaseName");
            
             services.AddControllers();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Identity.API", Version = "v1" });
+                var securitySchema = new OpenApiSecurityScheme
+                {
+                    Description = "JWT Auth Bearer Scheme",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                };
+
+                c.AddSecurityDefinition("Bearer", securitySchema);
+                var securityRequirement = new OpenApiSecurityRequirement { { securitySchema, new[] { "Bearer" } } };
+                c.AddSecurityRequirement(securityRequirement);
             });
 
-            services.AddIdentity<AppUser, AppRole>()
-                .AddMongoDbStores<AppUser, AppRole, Guid>
-                (
-                    mongoConnectionString, mongoDbName
-                );
-
-            //services.AddSignInManager<SignInManager<AppUser>>()
-            services.AddScoped<ITokenService,TokenService>();
-            services.SeedUsers(Configuration);
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
               .AddJwtBearer(options =>
@@ -63,6 +72,17 @@ namespace Identity.API
                       ValidateAudience = false
                   };
               });
+
+
+            services.AddIdentity<AppUser, AppRole>()
+                .AddMongoDbStores<AppUser, AppRole, Guid>
+                (
+                    mongoConnectionString, mongoDbName
+                );
+
+            //services.AddSignInManager<SignInManager<AppUser>>()
+            services.AddScoped<ITokenService,TokenService>();
+            services.SeedUsers(Configuration);
 
             services.AddCors(opt =>
             {

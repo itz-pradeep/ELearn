@@ -81,8 +81,8 @@ namespace Identity.API.Controllers
         }
 
 
+        [Authorize(Roles = "ADMIN")]
         [HttpGet]
-        [Authorize(Roles = "Admin")]
         public IActionResult GetUsers()
         {
             var result = _userManager.Users.ToList();
