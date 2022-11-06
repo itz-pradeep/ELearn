@@ -37,7 +37,9 @@ namespace Catalog.API.Controllers
         {
             var courses = await _courseRepository.GetCoursesAsync();
             var coursesToReturn = _mapper.Map<IEnumerable<CourseDto>>(courses);
-                
+
+            _logger.LogInformation($"Results found = {courses.Count()}");
+             
             return Ok(coursesToReturn);
 
         }
