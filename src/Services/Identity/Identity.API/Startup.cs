@@ -1,6 +1,7 @@
 using Identity.API.Entities;
 using Identity.API.Extensions;
 using Identity.API.Services;
+using JwtAuthenticationManager;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -65,24 +66,26 @@ namespace Identity.API
                   mongoConnectionString, mongoDbName
               );
 
-            services.AddAuthentication(op => {
-                op.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                op.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                op.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-              .AddJwtBearer(options =>
-              {
-                  options.TokenValidationParameters = new TokenValidationParameters
-                  {
-                      ValidateIssuerSigningKey = true,
-                      IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Token:Key"])),
-                      ValidIssuer = Configuration["Token:Issuer"],
-                      ValidateIssuer = true,
-                      ValidateAudience = false
-                  };
-              });
+            services.AddSingleton<JwtTokenHandler>();
 
- 
+            //services.AddAuthentication(op => {
+            //    op.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    op.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    op.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            //})
+            //  .AddJwtBearer(options =>
+            //  {
+            //      options.TokenValidationParameters = new TokenValidationParameters
+            //      {
+            //          ValidateIssuerSigningKey = true,
+            //          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Token:Key"])),
+            //          ValidIssuer = Configuration["Token:Issuer"],
+            //          ValidateIssuer = true,
+            //          ValidateAudience = false
+            //      };
+            //  });
+
+
             services.AddScoped<ITokenService,TokenService>();
             services.SeedUsers(Configuration);
 

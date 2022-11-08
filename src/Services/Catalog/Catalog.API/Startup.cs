@@ -1,6 +1,7 @@
 using Catalog.API.Data;
 using Catalog.API.Helpers;
 using Catalog.API.Repositories;
+using JwtAuthenticationManager;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -30,14 +31,33 @@ namespace Catalog.API
         {
 
             services.AddControllers();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Catalog.API", Version = "v1" });
+                var securitySchema = new OpenApiSecurityScheme
+                {
+                    Description = "JWT Auth Bearer Scheme",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                };
+
+                c.AddSecurityDefinition("Bearer", securitySchema);
+                var securityRequirement = new OpenApiSecurityRequirement { { securitySchema, new[] { "Bearer" } } };
+                c.AddSecurityRequirement(securityRequirement);
             });
 
-            services.AddScoped<ICatalogContext,CatalogContext>();
-            services.AddScoped<ICourseRepository,CourseRepository>();
+            services.AddScoped<ICatalogContext, CatalogContext>();
+            services.AddScoped<ICourseRepository, CourseRepository>();
             services.AddAutoMapper(typeof(MappingProfile));
+            services.AddCustomeJwtAuthentication();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,6 +71,8 @@ namespace Catalog.API
             }
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

@@ -1,4 +1,5 @@
 ﻿using Identity.API.Entities;
+using JwtAuthenticationManager;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -21,7 +22,7 @@ namespace Identity.API.Services
         {
             _config = config;
             _userManager = userManager;
-            _key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_config["Token:Key"]));
+            _key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(JwtTokenHandler.JWT_SECURITY_KEY));
         }
         public string CreateToken(AppUser user)
         {
@@ -46,7 +47,7 @@ namespace Identity.API.Services
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.Now.AddDays(7),
                 SigningCredentials = creds,
-                Issuer = _config["Token:Issuer"]
+                //Issuer = _config["Token:Issuer"]
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
