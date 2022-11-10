@@ -34,7 +34,7 @@ namespace Catalog.API.Controllers
         // GET: api/v1/<CatalogController>
         [HttpGet("getall")]
         [ProducesResponseType(typeof(IEnumerable<CourseDto>), (int)HttpStatusCode.OK)]
-        [Authorize(Roles = "ADMIN,NORMAL_USER")]
+        //[Authorize(Roles = "ADMIN,NORMAL_USER")]
         public async Task<ActionResult<IEnumerable<CourseDto>>> GetCourses()
         {
             var courses = await _courseRepository.GetCoursesAsync();
@@ -50,7 +50,7 @@ namespace Catalog.API.Controllers
         [HttpGet("{id}",Name = "GetCourse")]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(CourseDto), (int)HttpStatusCode.OK)]
-        [Authorize(Roles = "ADMIN")]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<ActionResult<CourseDto>> GetCourseById(string id)
         {
             var course = await _courseRepository.GetCourseAsync(id);
@@ -68,7 +68,7 @@ namespace Catalog.API.Controllers
 
         [HttpPost("info", Name = "GetByFilter")]
         [ProducesResponseType(typeof(IEnumerable<CourseDto>), (int)HttpStatusCode.OK)]
-        [Authorize(Roles = "ADMIN,NORMAL_USER")]
+        //[Authorize(Roles = "ADMIN,NORMAL_USER")]
         public async Task<ActionResult<IEnumerable<CourseDto>>> GetByFilter(FilterDto filter)
         {
             var courses = await _courseRepository.GetCourseByFilterAsync(filter);
@@ -82,7 +82,7 @@ namespace Catalog.API.Controllers
         // POST api/<CatalogController>
         [HttpPost]
         [ProducesResponseType(typeof(Course),(int)HttpStatusCode.OK)]
-        [Authorize(Roles = "ADMIN")]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<ActionResult<Course>> CreateCourse([FromBody] CourseCreateDto request)
         {
             var course = _mapper.Map<Course>(request);
@@ -96,7 +96,7 @@ namespace Catalog.API.Controllers
         // PUT api/<CatalogController>/5
         [HttpPut()]
         [ProducesResponseType(typeof(Course), (int)HttpStatusCode.OK)]
-        [Authorize(Roles = "ADMIN")]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> UpdateCourse([FromBody] CourseUpdateDto request)
         {
             var course = _mapper.Map<Course>(request);
@@ -107,7 +107,7 @@ namespace Catalog.API.Controllers
         // DELETE api/<CatalogController>/5
         [HttpDelete("{id}",Name = "DeleteCourse")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        [Authorize(Roles = "ADMIN")]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> Delete(string id)
         {
             return Ok(await _courseRepository.DeleteCourseAsync(id));

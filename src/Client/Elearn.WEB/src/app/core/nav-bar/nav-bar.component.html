@@ -1,0 +1,54 @@
+<nav
+  class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark"
+  aria-label="Main navigation"
+>
+  <div class="container-fluid">
+    <a class="navbar-brand">LMS</a>
+    <button
+      class="navbar-toggler p-0 border-0"
+      type="button"
+      id="navbarSideCollapse"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Dashboard</a>
+        </li>
+      </ul>
+      <div class="d-flex me-2">
+        <div class="btn-group" dropdown>
+          <!-- <button
+            id="button-basic"
+            dropdownToggle
+            type="button"
+            class="btn btn-outline-light dropdown-toggle"
+            aria-controls="dropdown-basic"
+          >
+            {{ (currentUser$ | async).displayName }}<span class="caret"></span>
+          </button> -->
+          <ul
+            id="dropdown-basic"
+            *dropdownMenu
+            class="dropdown-menu"
+            role="menu"
+            aria-labelledby="button-basic"
+          >
+            <!-- <li role="menuitem">
+              <a class="dropdown-item"
+                >Role: {{ (currentUser$ | async).roles }}</a
+              >
+            </li> -->
+            <li class="divider dropdown-divider"></li>
+            <li role="menuitem">
+              <a class="dropdown-item">Logout (v1.0.0)</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

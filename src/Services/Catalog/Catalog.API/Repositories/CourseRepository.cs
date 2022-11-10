@@ -41,26 +41,15 @@ namespace Catalog.API.Repositories
 
         public async Task<IEnumerable<Course>> GetCourseByFilterAsync(FilterDto filterDto)
         {
-            var builder = Builders<Course>.Filter;
-            FilterDefinition<Course> filter = FilterDefinition<Course>.Empty;
 
-
-
-            if (!string.IsNullOrEmpty(filterDto.Technology))
-            {
-                var queryExpr = new Regex(filterDto.Technology, RegexOptions.None);
-
-                filter = builder.Regex("Technology", queryExpr);
-            }
-
+            var filteredRecords = await _context.Courses.Find(x=>x.Technology.ToLower().Contains(filterDto.Technology.ToLower())).ToListAsync();
             if ((filterDto.DurationFromRange > 0 && filterDto.DurationToRange > 0) && (filterDto.DurationToRange > filterDto.DurationFromRange))
             {
-                filter &= builder.Gte("Hours",filterDto.DurationFromRange);
-                filter &= builder.Lt("Hours",filterDto.DurationToRange);
+                filteredRecords = filteredRecords.Where(x=>x.Hours >= filterDto.DurationFromRange && x.Hours < filterDto.DurationToRange).ToList();
             }
 
+            return filteredRecords;
 
-            return await _context.Courses.Find(filter).ToListAsync();
         }
 
         public async Task<IEnumerable<Course>> GetCoursesAsync()
