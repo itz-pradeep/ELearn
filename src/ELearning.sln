@@ -26,6 +26,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JwtAuthenticationManager", "BuildingBlocks\JwtAuthenticationManager\JwtAuthenticationManager.csproj", "{B846B6C8-99BB-41ED-86D0-5F9D692A1263}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{61ADD05B-48ED-4DC5-BA34-4503327CDE01}"
+	ProjectSection(SolutionItems) = preProject
+		AngularCommadsCheat.txt = AngularCommadsCheat.txt
+	EndProjectSection
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "Elearn.WEB", "Client\Elearn.WEB\Elearn.WEB.esproj", "{6186EE41-E887-405C-A644-9D2D98750A11}"
 EndProject
